@@ -92,21 +92,21 @@ INSERT INTO public.menu_items (category_id, name, description, price, image_url,
 ON CONFLICT (category_id, name) DO NOTHING;
 
 -- NON-VEG CURRIES (14 items)
-INSERT INTO public.menu_items (category_id, name, description, price, image_url, food_type, sort_order) VALUES
-  ('11111111-0001-0001-0001-000000000006', 'IPL Special Chicken',    'Our signature spicy chicken curry, cooked with ground home spices and cashew paste.',     300, './IPL DHABA ITEMS/andhra chicken curry.jpg',         'non_veg', 1),
-  ('11111111-0001-0001-0001-000000000006', 'Bullet Chicken',         'Extra hot chicken curry cooked with bullet green chilies and dark spices.',                300, './IPL DHABA ITEMS/chickenbullets.jpg',         'non_veg', 2),
-  ('11111111-0001-0001-0001-000000000006', 'Panjabi Chicken',        'Robust chicken curry cooked in an onion-tomato base with Punjabi spices.',                 280, './IPL DHABA ITEMS/punjabi chicken curry.jpg',        'non_veg', 3),
-  ('11111111-0001-0001-0001-000000000006', 'Chicken 555',            'Creamy and spicy chicken curry cooked with yoghurt, capsicum, and cashew paste.',          300, './IPL DHABA ITEMS/chicken 555 curry.jpg',            'non_veg', 4),
-  ('11111111-0001-0001-0001-000000000006', 'Mogalai Chicken',        'Rich and mild chicken curry cooked with egg whites, cashew cream, and saffron.',           250, './IPL DHABA ITEMS/mogalai chicken curry.jpg',        'non_veg', 5),
-  ('11111111-0001-0001-0001-000000000006', 'Butter Chicken',         'Tender chicken pieces cooked in a creamy, sweet, and buttery tomato gravy.',               250, './IPL DHABA ITEMS/butter chicken curry.jpg',         'non_veg', 6),
-  ('11111111-0001-0001-0001-000000000006', 'Indian Chicken',         'Home-style Indian chicken curry, mildly spiced and garnished with fresh coriander.',       270, './IPL DHABA ITEMS/indian chicken curry.jpg',         'non_veg', 7),
-  ('11111111-0001-0001-0001-000000000006', 'Hydarabad Spicy',        'Fiery chicken curry cooked with local red chilies, tamarind, and coconut paste.',          300, './IPL DHABA ITEMS/hydrabad spicy chicken curry.jpg', 'non_veg', 8),
-  ('11111111-0001-0001-0001-000000000006', 'Ramba Chicken',          'Chef''s special green chicken curry cooked with mint, coriander, and spinach paste.',     250, './IPL DHABA ITEMS/rambha chicken curry.jpg',         'non_veg', 9),
-  ('11111111-0001-0001-0001-000000000006', 'Bone Kadai',             'Bone-in chicken tossed with bell peppers and whole spices in a kadai masala.',             280, './IPL DHABA ITEMS/kadai chicken curry.jpg',          'non_veg', 10),
-  ('11111111-0001-0001-0001-000000000006', 'Boneless Kadai',         'Boneless chicken cubes cooked with capsicum, onion, and fresh kadai masala.',              280, './IPL DHABA ITEMS/boneless kadai chicken curry.jpg', 'non_veg', 11),
-  ('11111111-0001-0001-0001-000000000006', 'Nellore Chicken',        'Traditional spicy coastal Andhra chicken curry flavored with local tamarind and spices.',  300, './IPL DHABA ITEMS/nellore chicken curry.jpg',        'non_veg', 12),
-  ('11111111-0001-0001-0001-000000000006', 'Andhra Chicken',         'Classic hot and spicy chicken curry cooked in Andhra style with dry coconut.',             250, './IPL DHABA ITEMS/andhra chicken curry.jpg',         'non_veg', 13),
-  ('11111111-0001-0001-0001-000000000006', 'Boneless Roast Chicken', 'Boneless chicken chunks pan-roasted with spicy thick gravy until dry.',                    250, './IPL DHABA ITEMS/boneless roast chicken curry.jpg', 'non_veg', 14)
+INSERT INTO public.menu_items (category_id, name, description, price, image_url, food_type, is_featured, sort_order) VALUES
+  ('11111111-0001-0001-0001-000000000006', 'IPL Special Chicken',    'Our signature spicy chicken curry, cooked with ground home spices and cashew.',     300, './IPL DHABA ITEMS/andhra chicken curry.jpg',         'non_veg', true,  1),
+  ('11111111-0001-0001-0001-000000000006', 'Bullet Chicken',         'Extra hot chicken curry cooked with bullet green chilies and dark spices.',                300, './IPL DHABA ITEMS/chickenbullets.jpg',         'non_veg', false, 2),
+  ('11111111-0001-0001-0001-000000000006', 'Panjabi Chicken',        'Robust chicken curry cooked in an onion-tomato base with Punjabi spices.',                 280, './IPL DHABA ITEMS/punjabi chicken curry.jpg',        'non_veg', false, 3),
+  ('11111111-0001-0001-0001-000000000006', 'Chicken 555',            'Creamy and spicy chicken curry cooked with yoghurt, capsicum, and cashew paste.',          300, './IPL DHABA ITEMS/chicken 555 curry.jpg',            'non_veg', false, 4),
+  ('11111111-0001-0001-0001-000000000006', 'Mogalai Chicken',        'Rich and mild chicken curry cooked with egg whites, cashew cream, and saffron.',           250, './IPL DHABA ITEMS/mogalai chicken curry.jpg',        'non_veg', false, 5),
+  ('11111111-0001-0001-0001-000000000006', 'Butter Chicken',         'Tender chicken pieces cooked in a creamy, sweet, and buttery tomato gravy.',               250, './IPL DHABA ITEMS/butter chicken curry.jpg',         'non_veg', false, 6),
+  ('11111111-0001-0001-0001-000000000006', 'Indian Chicken',         'Home-style Indian chicken curry, mildly spiced and garnished with fresh coriander.',       270, './IPL DHABA ITEMS/indian chicken curry.jpg',         'non_veg', false, 7),
+  ('11111111-0001-0001-0001-000000000006', 'Hydarabad Spicy',        'Fiery chicken curry cooked with local red chilies, tamarind, and coconut paste.',          300, './IPL DHABA ITEMS/hydrabad spicy chicken curry.jpg', 'non_veg', false, 8),
+  ('11111111-0001-0001-0001-000000000006', 'Ramba Chicken',          'Chef''s special green chicken curry cooked with mint, coriander, and spinach paste.',     250, './IPL DHABA ITEMS/rambha chicken curry.jpg',         'non_veg', false, 9),
+  ('11111111-0001-0001-0001-000000000006', 'Bone Kadai',             'Bone-in chicken tossed with bell peppers and whole spices in a kadai masala.',             280, './IPL DHABA ITEMS/kadai chicken curry.jpg',          'non_veg', false, 10),
+  ('11111111-0001-0001-0001-000000000006', 'Boneless Kadai',         'Boneless chicken cubes cooked with capsicum, onion, and fresh kadai masala.',              280, './IPL DHABA ITEMS/boneless kadai chicken curry.jpg', 'non_veg', false, 11),
+  ('11111111-0001-0001-0001-000000000006', 'Nellore Chicken',        'Traditional spicy coastal Andhra chicken curry flavored with local tamarind and spices.',  300, './IPL DHABA ITEMS/nellore chicken curry.jpg',        'non_veg', false, 12),
+  ('11111111-0001-0001-0001-000000000006', 'Andhra Chicken',         'Classic hot and spicy chicken curry cooked in Andhra style with dry coconut.',             250, './IPL DHABA ITEMS/andhra chicken curry.jpg',         'non_veg', false, 13),
+  ('11111111-0001-0001-0001-000000000006', 'Boneless Roast Chicken', 'Boneless chicken chunks pan-roasted with spicy thick gravy until dry.',                    250, './IPL DHABA ITEMS/boneless roast chicken curry.jpg', 'non_veg', false, 14)
 ON CONFLICT (category_id, name) DO NOTHING;
 
 -- BIRYANI & RICE (9 items — Mutton Biryani lives here only)
