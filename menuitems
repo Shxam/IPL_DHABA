@@ -1,0 +1,193 @@
+=========================
+MENU ITEMS
+=========================
+
+VEG
+
+Starters
+- (Empty for now)
+
+Curries
+- Chana Masala Curry
+- Dal Tadka Curry
+- Dal Tomato Curry
+- Kadai Paneer Curry
+- Kaju Curry
+- Kaju Mushroom Curry
+- Methi Chaman Curry
+- Mushroom Curry
+- Palak Paneer Curry
+- Paneer Butter Masala Curry
+- Plain Palak Curry
+- Tomato Curry
+
+Rice
+- Jeera Rice
+- Vegetable Rice
+- Cashew Rice
+- Plavu Rice
+
+Bread
+- Pulka
+
+NON-VEG
+
+Chicken Starters
+- Chicken 65 Starter
+- Chicken Fry Bone Starter
+- Chicken Fry Boneless Starter
+- Chicken Starter
+- Chilli Chicken Starter
+- Dragon Chicken Starter
+- Kaju Chicken Fry Starter
+- Lemon Chicken Starter
+- Majestic Chicken Starter
+- Pepper Chicken Starter
+- RR Chicken Starter
+- Star Chicken Starter
+- Lollipop Fry Chicken
+- Lollipop Roast Starter
+- Leg Piece Roast Starter
+
+Chicken Curries
+- Andhra Chicken Curry
+- Boneless Kadai Chicken Curry
+- Boneless Roast Chicken Curry
+- Bullet Chicken Curry
+- Butter Chicken Curry
+- Chicken 555 Curry
+- Ginger Chicken Curry
+- Hyderabad Spicy Chicken Curry
+- Indian Chicken Curry
+- Jaipur Special Curry
+- Kadai Chicken Curry
+- Moghlai Chicken Curry
+- Nellore Chicken Curry
+- Punjabi Chicken Curry
+- Rambha Chicken Curry
+
+Mutton
+- Mutton Curry
+- Mutton Fry
+
+Fish
+- Apollo Fish Fry
+- Apollo Fish Roast
+
+Prawns
+- Prawn Curry
+- Prawns 65
+- Prawns Chilli
+- Prawns Fry
+- Prawns Roast
+
+Egg
+- Egg Curry
+- Egg Bhurji Curry
+- Egg Fry Curry
+- Egg Palak Curry
+- Egg Tadka Curry
+- Egg Keema
+- Egg Rice
+
+Rice
+- Chicken Fried Rice
+- Chicken Fried Rice (150)
+
+Biryani
+- Boneless Biryani
+- Mutton Biryani
+
+=========================
+EACH FOOD CARD SHOULD HAVE
+=========================
+
+• High-quality realistic food photograph
+• Food Name
+• Veg / Non-Veg Badge
+• Category
+• Sub-category
+• Short Description
+• Price
+• Rating
+• Preparation Time
+• Popular Badge (Optional)
+• Spicy Level
+• Quantity Selector
+• Favorite Button
+• Add to Cart Button
+
+=========================
+FILTERS
+=========================
+
+Top Filters
+
+All
+
+Veg
+
+Non-Veg
+
+Starters
+
+Curries
+
+Rice
+
+Biryani
+
+Chicken
+
+Mutton
+
+Fish
+
+Prawns
+
+Egg
+
+Bread
+
+Popular
+
+Today's Special
+
+Spicy
+
+Best Seller
+
+=========================
+SEARCH
+=========================
+
+Search by:
+- Food Name
+- Category
+- Ingredients
+
+Examples:
+Butter Chicken
+Chicken 65
+Paneer
+Prawns
+Egg
+Rice
+
+=========================
+SORT OPTIONS
+=========================
+
+Default
+
+Price Low to High
+
+Price High to Low
+
+Highest Rated
+
+Most Popular
+
+Newest
+
+Alphabetical

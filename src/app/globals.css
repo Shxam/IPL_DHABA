@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Yatra+One&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-display: 'Yatra One', cursive;
+  --font-body: 'Inter', sans-serif;
+  --saffron: #FF6B00;
+  --cream: #FFF8F0;
+  --ink: #1C1C1C;
+  --border: #E8E0D5;
+  --surface: #FFFFFF;
+  --surface-hover: #FDFBF7;
+  --muted: #6B6B6B;
+}
+
+.dark {
+  --cream: #0C0C0F;
+  --ink: #F9FAFB;
+  --border: #222226;
+  --surface: #131316;
+  --surface-hover: #19191D;
+  --muted: #9CA3AF;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--cream);
+  color: var(--ink);
+  line-height: 1.5;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Leaflet maps styling overrides to fit premium layout */
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+}
+
+.glassmorphism {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.glassmorphism-dark {
+  background: rgba(28, 28, 28, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
