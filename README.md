@@ -6,7 +6,7 @@
 
 A premium, mobile-first, and highly aesthetic food delivery application custom-built for **IPL Dhaba** (Singarayakonda, AP, India). Features realtime WebSocket order tracking, custom role-based access controls, Mapbox routing, Twilio OTP verification, and a smart Google Review feedback redirection funnel.
 
-👉 **Live App**: [https://ipl-dhaba-app-4ape.vercel.app/](https://ipl-dhaba-app-4ape.vercel.app/)
+👉 **Live App**: [IPL-DHABA/](https://ipl-dhaba.vercel.app/)
 
 ---
 
