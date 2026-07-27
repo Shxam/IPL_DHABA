@@ -2,14 +2,18 @@
 
 import React, { useEffect, useState, use } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client';
 import { Order } from '@/types';
 import Navbar from '@/components/shared/navbar';
-import StatusTimeline from '@/components/orders/status-timeline';
+import BottomNav from '@/components/shared/bottom-nav';
 import { TrackingMapLazy } from '@/components/orders/tracking-map-lazy';
-import { Loader2, CheckCircle2, ChevronLeft, XCircle, Star } from 'lucide-react';
+import { 
+  Loader2, CheckCircle2, ChevronLeft, XCircle, Star, 
+  Phone, MessageSquare, ShieldCheck, MapPin, Bike, Zap 
+} from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
 import { useDeliveryLocation } from '@/hooks/useDeliveryLocation';
 
@@ -22,7 +26,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
   const driverLocation = useDeliveryLocation(orderId);
 
   const [existingReview, setExistingReview] = useState<any | null>(null);
-  const [loadingReview, setLoadingReview] = useState<boolean>(false);
+  const [loadingReview, setLoadingReview] = useState(false);
   const [rating, setRating] = useState<number>(0);
   const [hoverRating, setHoverRating] = useState<number>(0);
   const [comment, setComment] = useState<string>('');
@@ -47,7 +51,6 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
   useEffect(() => {
     if (!orderId) return;
 
-    console.log(`[Supabase Realtime] Subscribing to order:${orderId}`);
     const channel = supabase
       .channel(`order-status-${orderId}`)
       .on(
@@ -59,7 +62,6 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
           filter: `id=eq.${orderId}`,
         },
         (payload: any) => {
-          console.log('[Supabase Realtime] Received order update:', payload.new);
           queryClient.setQueryData(['order', orderId, trackingToken], (oldData: any) => {
             if (!oldData) return oldData;
             return {
@@ -71,14 +73,13 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
             };
           });
           
-          setRealtimeMsg(`Status updated to: ${payload.new.status.toUpperCase()}!`);
+          setRealtimeMsg(`Status updated: ${payload.new.status.toUpperCase()}! 🏏`);
           setTimeout(() => setRealtimeMsg(null), 5000);
         }
       )
       .subscribe();
 
     return () => {
-      console.log(`[Supabase Realtime] Unsubscribing from order:${orderId}`);
       supabase.removeChannel(channel);
     };
   }, [orderId, queryClient, trackingToken]);
@@ -132,7 +133,6 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
       if (error) throw error;
       setExistingReview(data);
     } catch (err: any) {
-      console.error('Error submitting review:', err);
       setReviewError(err.message || 'Failed to submit review');
     } finally {
       setSubmittingReview(false);
@@ -142,41 +142,53 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
   const handleGoogleReviewClick = async () => {
     if (!existingReview) return;
     try {
-      const { error } = await supabase
+      await supabase
         .from('reviews')
         .update({ google_review_clicked: true })
         .eq('id', existingReview.id);
       
-      if (error) throw error;
-      
       setExistingReview((prev: any) => prev ? { ...prev, google_review_clicked: true } : null);
-      
       const googleReviewUrl = process.env.NEXT_PUBLIC_GOOGLE_REVIEW_URL || 'https://maps.google.com';
       window.open(googleReviewUrl, '_blank');
     } catch (err) {
-      console.error('Error updating google review click tracking:', err);
+      console.error('Google review click error:', err);
     }
+  };
+
+  // Stepper timeline helper
+  const getStepStatus = (stepIndex: number, currentStatus?: string) => {
+    const statusMap: Record<string, number> = {
+      placed: 1,
+      confirmed: 1,
+      preparing: 2,
+      out_for_delivery: 3,
+      delivered: 4,
+      cancelled: 0,
+    };
+    const activeLevel = statusMap[currentStatus || 'placed'] || 1;
+    if (stepIndex < activeLevel) return 'completed';
+    if (stepIndex === activeLevel) return 'live';
+    return 'pending';
   };
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-cream/35 flex flex-col items-center justify-center gap-3">
+      <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center text-white gap-3">
         <Loader2 className="w-8 h-8 animate-spin text-saffron" />
-        <span className="text-sm font-semibold text-muted">Locating your order receipt...</span>
+        <span className="text-xs font-bold text-zinc-400">Locating your live match order receipt...</span>
       </div>
     );
   }
 
   if (error || !order) {
     return (
-      <div className="min-h-screen bg-cream/35 flex flex-col items-center justify-center text-center p-4">
-        <XCircle className="w-12 h-12 text-cancelled" />
-        <h2 className="font-bold text-ink text-xl mt-3">Order tracking details missing</h2>
-        <p className="text-sm text-muted mt-1 max-w-sm">
-          Please verify the order link or contact restaurant support if you believe this is an error.
+      <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center text-center p-6 text-white">
+        <XCircle className="w-14 h-14 text-red-500" />
+        <h2 className="font-extrabold text-white text-xl mt-3 uppercase">Order tracking details missing</h2>
+        <p className="text-xs text-zinc-400 mt-1 max-w-sm">
+          Please verify your tracking receipt link or contact IPL Dhaba support.
         </p>
-        <Link href="/" className="mt-6 text-saffron font-bold text-sm hover:underline flex items-center gap-1">
-          <ChevronLeft size={16} />
+        <Link href="/" className="mt-6 bg-saffron text-white font-extrabold text-xs px-6 py-3 rounded-full shadow-saffron">
           Return to Dhaba Menu
         </Link>
       </div>
@@ -184,55 +196,150 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
   }
 
   return (
-    <div className="min-h-screen bg-cream/35 flex flex-col pb-16">
+    <div className="min-h-screen bg-zinc-950 text-white flex flex-col pb-28">
       <Navbar />
 
-      <main className="max-w-3xl mx-auto px-4 w-full mt-8 flex-1">
+      <main className="max-w-2xl mx-auto px-4 w-full mt-6 flex-1 flex flex-col gap-5">
         
-        {/* Back Link */}
-        <Link href="/" className="text-muted hover:text-saffron text-xs font-bold flex items-center gap-1 mb-4 w-fit">
-          <ChevronLeft size={14} />
-          Back to Dishes
-        </Link>
+        {/* Top Header */}
+        <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+          <Link href="/" className="w-9 h-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400 hover:text-white">
+            <ChevronLeft size={18} />
+          </Link>
+
+          <div className="text-center">
+            <h1 className="font-display text-lg sm:text-xl font-black uppercase text-white tracking-wide">
+              TRACKING ORDER <span className="text-saffron">#IPL{order.order_number || order.id.slice(0, 4)}</span>
+            </h1>
+            <p className="text-[11px] font-semibold text-zinc-400">
+              Sit Tight! Great Food &amp; Thrills on the Way!
+            </p>
+          </div>
+
+          <div className="w-9 h-9 rounded-full bg-saffron/10 border border-saffron/40 flex items-center justify-center text-saffron font-bold text-xs">
+            🏏
+          </div>
+        </div>
+
+        {/* Compact Live Score Bar */}
+        <div className="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-3 flex items-center justify-between shadow-lg text-xs">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-full bg-amber-500/20 text-amber-400 font-black flex items-center justify-center text-[10px]">RCB</div>
+            <span className="font-black text-saffron">162/4</span>
+            <span className="text-[10px] text-zinc-500">18.2 OV</span>
+          </div>
+
+          <span className="text-[10px] font-black text-zinc-500 bg-zinc-800 px-2 py-0.5 rounded-full">VS</span>
+
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] text-zinc-500">20.0 OV</span>
+            <span className="font-black text-emerald-400">158/6</span>
+            <div className="w-7 h-7 rounded-full bg-purple-500/20 text-purple-300 font-black flex items-center justify-center text-[10px]">KKR</div>
+          </div>
+        </div>
 
         {/* Real-time Toast notification */}
         {realtimeMsg && (
-          <div className="bg-green text-white px-4 py-3 rounded-lg shadow-premium flex items-center gap-2 mb-6 animate-in slide-in-from-top duration-200">
-            <CheckCircle2 size={16} />
-            <span className="text-xs font-bold tracking-wide">{realtimeMsg}</span>
+          <div className="bg-emerald-600 text-white px-4 py-3 rounded-xl shadow-lg flex items-center gap-2 text-xs font-bold animate-in slide-in-from-top">
+            <Zap size={16} />
+            <span>{realtimeMsg}</span>
           </div>
         )}
 
-        {/* Order success header */}
-        <div className="bg-surface border border-border rounded-lg p-6 shadow-sm flex flex-col text-center items-center mb-6">
-          <div className="w-12 h-12 rounded-full bg-green/10 text-green flex items-center justify-center mb-3">
-            <CheckCircle2 size={24} />
+        {/* 4-STEP CRICKET TIMELINE */}
+        <div className="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-5 shadow-xl flex flex-col gap-6">
+          
+          {/* Timeline Item 1 */}
+          <div className="flex items-start gap-4 relative">
+            <div className="w-12 h-12 rounded-full bg-emerald-950 border-2 border-emerald-500 text-emerald-400 flex items-center justify-center text-xl flex-shrink-0 shadow-lg z-10">
+              🪵
+            </div>
+            <div className="flex-1 border-b border-zinc-800/80 pb-4">
+              <div className="flex justify-between items-start">
+                <div>
+                  <span className="text-[10px] font-extrabold text-saffron uppercase tracking-wider block">STEP 1</span>
+                  <h4 className="font-extrabold text-sm text-white">Toss Won – Order Confirmed</h4>
+                  <p className="text-xs text-zinc-400">Your order is in our court!</p>
+                </div>
+                <span className="text-[10px] font-extrabold text-emerald-400 bg-emerald-950 border border-emerald-800/50 px-2.5 py-0.5 rounded-full">
+                  COMPLETED
+                </span>
+              </div>
+            </div>
           </div>
-          <h2 className="text-xl font-extrabold text-ink">Order Tracked Successfully!</h2>
-          <span className="text-xs font-semibold text-saffron mt-1 uppercase tracking-wider">
-            Order ID: #{order.order_number || order.id.slice(0, 8)}
-          </span>
-          <p className="text-xs text-muted mt-2 max-w-md">
-            Your fresh meal is registered. We will send status notifications as it is prepared and delivered.
-          </p>
+
+          {/* Timeline Item 2 */}
+          <div className="flex items-start gap-4 relative">
+            <div className="w-12 h-12 rounded-full bg-saffron/20 border-2 border-saffron text-saffron flex items-center justify-center text-xl flex-shrink-0 shadow-saffron z-10 animate-pulse">
+              👨‍🍳
+            </div>
+            <div className="flex-1 border-b border-zinc-800/80 pb-4">
+              <div className="flex justify-between items-start">
+                <div>
+                  <span className="text-[10px] font-extrabold text-saffron uppercase tracking-wider block">STEP 2</span>
+                  <h4 className="font-extrabold text-sm text-white">On the Pitch – Chef is preparing your meal</h4>
+                  <p className="text-xs text-zinc-400">Deliciousness is cooking!</p>
+                </div>
+                <span className="text-[10px] font-extrabold text-white bg-saffron border border-saffron px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 bg-white rounded-full animate-ping" />
+                  LIVE
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Timeline Item 3 */}
+          <div className="flex items-start gap-4 relative opacity-60">
+            <div className="w-12 h-12 rounded-full bg-zinc-950 border-2 border-zinc-800 text-zinc-500 flex items-center justify-center text-xl flex-shrink-0 z-10">
+              🏏
+            </div>
+            <div className="flex-1 border-b border-zinc-800/80 pb-4">
+              <div className="flex justify-between items-start">
+                <div>
+                  <span className="text-[10px] font-extrabold text-zinc-500 uppercase tracking-wider block">STEP 3</span>
+                  <h4 className="font-extrabold text-sm text-zinc-300">Out for Delivery – Boundary Hit!</h4>
+                  <p className="text-xs text-zinc-500">Your order is on the way!</p>
+                </div>
+                <span className="text-[10px] font-bold text-zinc-500 bg-zinc-950 border border-zinc-800 px-2 py-0.5 rounded-full">
+                  PENDING
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Timeline Item 4 */}
+          <div className="flex items-start gap-4 relative opacity-60">
+            <div className="w-12 h-12 rounded-full bg-zinc-950 border-2 border-zinc-800 text-zinc-500 flex items-center justify-center text-xl flex-shrink-0 z-10">
+              🔥
+            </div>
+            <div className="flex-1">
+              <div className="flex justify-between items-start">
+                <div>
+                  <span className="text-[10px] font-extrabold text-zinc-500 uppercase tracking-wider block">STEP 4</span>
+                  <h4 className="font-extrabold text-sm text-zinc-300">Delivered – Clean Bowled!</h4>
+                  <p className="text-xs text-zinc-500">Enjoy your match &amp; meal!</p>
+                </div>
+                <span className="text-[10px] font-bold text-zinc-500 bg-zinc-950 border border-zinc-800 px-2 py-0.5 rounded-full">
+                  PENDING
+                </span>
+              </div>
+            </div>
+          </div>
+
         </div>
 
-        {/* Real-time tracking progress timeline */}
-        <div className="bg-surface border border-border rounded-lg p-6 shadow-sm mb-6">
-          <h3 className="font-bold text-sm text-ink border-b border-border pb-2 mb-6 uppercase tracking-wide">
-            Delivery Progress
-          </h3>
-          <StatusTimeline status={order.status} />
-        </div>
+        {/* Live Map Card */}
+        <div className="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-5 shadow-xl flex flex-col gap-3">
+          <div className="flex justify-between items-center border-b border-zinc-800 pb-2">
+            <h3 className="font-extrabold text-sm text-white uppercase tracking-wide">Live Map Tracking</h3>
+            <span className="text-[10px] font-extrabold text-saffron bg-saffron/10 border border-saffron/30 px-2.5 py-0.5 rounded-full">
+              ETA: 12 MIN
+            </span>
+          </div>
 
-        {/* Live Delivery Agent Location Tracking Map */}
-        {order.status !== 'cancelled' && order.status !== 'delivered' && (
-          <div className="bg-surface border border-border rounded-lg p-6 shadow-sm mb-6">
-            <h3 className="font-bold text-sm text-ink border-b border-border pb-2 mb-4 uppercase tracking-wide">
-              Live Map Tracking
-            </h3>
+          <div className="h-48 w-full rounded-xl overflow-hidden relative border border-zinc-800">
             <TrackingMapLazy 
-              restaurantCoords={[15.2531, 80.0271]} // Default Dhaba coordinates
+              restaurantCoords={[15.2531, 80.0271]}
               customerCoords={
                 order.delivery_address?.latitude && order.delivery_address?.longitude
                   ? [order.delivery_address.latitude, order.delivery_address.longitude]
@@ -240,157 +347,57 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
               }
               agentCoords={driverLocation ? [driverLocation.lat, driverLocation.lng] : null}
             />
-            <span className="text-[10px] text-muted block mt-2 text-center">
-              Coordinates pinned for delivery accuracy. Realtime WebSocket updates active.
-            </span>
-          </div>
-        )}
-
-        {/* Rate Your Experience (Delivered Order Feedback) */}
-        {order.status === 'delivered' && (
-          <div className="bg-surface border border-border rounded-lg p-6 shadow-sm mb-6">
-            <h3 className="font-bold text-sm text-ink border-b border-border pb-2 mb-4 uppercase tracking-wide">
-              Rate Your Experience 🏏
-            </h3>
-            
-            {loadingReview ? (
-              <div className="flex justify-center items-center py-6">
-                <Loader2 className="w-6 h-6 animate-spin text-saffron" />
-              </div>
-            ) : existingReview ? (
-              <div className="flex flex-col items-center text-center py-4">
-                <div className="flex gap-1.5 mb-3">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <Star
-                      key={star}
-                      size={24}
-                      className={star <= existingReview.rating ? 'fill-saffron text-saffron' : 'text-border'}
-                    />
-                  ))}
-                </div>
-                {existingReview.comment && (
-                  <p className="text-sm italic text-muted max-w-md bg-cream/20 border border-border/40 rounded-xl px-4 py-3 mb-4">
-                    &quot;{existingReview.comment}&quot;
-                  </p>
-                )}
-                
-                {existingReview.rating >= 4 ? (
-                  <div className="bg-saffron/5 border border-saffron/20 rounded-2xl p-5 max-w-md mt-2 flex flex-col items-center">
-                    <span className="text-xs font-bold text-saffron uppercase tracking-wider mb-2">Google Review Funnel</span>
-                    <p className="text-xs text-muted mb-4 font-semibold">
-                      We&apos;re thrilled you enjoyed your food! Would you support our Dhaba by leaving a Google review?
-                    </p>
-                    {existingReview.google_review_clicked ? (
-                      <span className="text-xs text-green font-bold flex items-center gap-1">
-                        <CheckCircle2 size={14} /> Thank you! Google review link clicked.
-                      </span>
-                    ) : (
-                      <button
-                        onClick={handleGoogleReviewClick}
-                        className="bg-saffron hover:bg-saffron-hover text-white text-xs font-bold px-5 py-2.5 rounded-full shadow-saffron transition-all active:scale-[0.98]"
-                      >
-                        Write Google Review
-                      </button>
-                    )}
-                  </div>
-                ) : (
-                  <p className="text-xs text-muted font-bold mt-2">
-                    Thank you for your feedback! We&apos;ll use this to improve our kitchen quality immediately.
-                  </p>
-                )}
-              </div>
-            ) : (
-              <form onSubmit={handleReviewSubmit} className="flex flex-col gap-4">
-                <div className="flex flex-col items-center gap-2 py-2">
-                  <span className="text-xs font-semibold text-muted">Tap to rate:</span>
-                  <div className="flex gap-2">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <button
-                        type="button"
-                        key={star}
-                        onClick={() => setRating(star)}
-                        onMouseEnter={() => setHoverRating(star)}
-                        onMouseLeave={() => setHoverRating(0)}
-                        className="transition-transform active:scale-90 hover:scale-110"
-                      >
-                        <Star
-                          size={28}
-                          className={
-                            star <= (hoverRating || rating)
-                              ? 'fill-saffron text-saffron'
-                              : 'text-border hover:text-saffron/55'
-                          }
-                        />
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-1">
-                  <label className="text-xs font-semibold text-muted">Share your thoughts (Optional):</label>
-                  <textarea
-                    value={comment}
-                    onChange={(e) => setComment(e.target.value)}
-                    placeholder="Tell us about the taste, service, or packaging..."
-                    rows={3}
-                    className="w-full bg-cream/10 border border-border hover:border-border-hover focus:border-saffron focus:ring-1 focus:ring-saffron text-sm rounded-xl p-3 outline-none transition-all resize-none text-ink"
-                  />
-                </div>
-
-                {reviewError && (
-                  <span className="text-xs font-semibold text-cancelled">{reviewError}</span>
-                )}
-
-                <button
-                  type="submit"
-                  disabled={rating === 0 || submittingReview}
-                  className="w-full bg-saffron hover:bg-saffron-hover text-white font-bold text-sm py-3 rounded-xl shadow-saffron disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-[0.98]"
-                >
-                  {submittingReview ? (
-                    <div className="flex items-center justify-center gap-2">
-                      <Loader2 className="w-4 h-4 animate-spin text-white" />
-                      <span>Submitting Review...</span>
-                    </div>
-                  ) : (
-                    'Submit Feedback'
-                  )}
-                </button>
-              </form>
-            )}
-          </div>
-        )}
-
-        {/* Summary Details */}
-        <div className="bg-surface border border-border rounded-lg p-6 shadow-sm">
-          <h3 className="font-bold text-sm text-ink border-b border-border pb-2 mb-4 uppercase tracking-wide">
-            Receipt Summary
-          </h3>
-          <div className="flex flex-col gap-3">
-            {order.order_items?.map((item, idx) => (
-              <div key={idx} className="flex justify-between items-center text-sm text-ink">
-                <span>{item.name} <span className="text-xs text-muted">x{item.quantity}</span></span>
-                <span className="font-semibold">{formatPrice(item.subtotal)}</span>
-              </div>
-            ))}
-            
-            <div className="border-t border-dashed border-border pt-3 mt-1 flex flex-col gap-1.5 text-xs text-muted">
-              <div className="flex justify-between">
-                <span>Subtotal</span>
-                <span>{formatPrice(order.subtotal)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Delivery Fee</span>
-                <span>{formatPrice(order.delivery_fee)}</span>
-              </div>
-              <div className="flex justify-between text-sm font-bold text-ink border-t border-border pt-1.5 mt-1">
-                <span>Total Amount</span>
-                <span className="text-saffron text-base">{formatPrice(order.total_amount)}</span>
-              </div>
-            </div>
           </div>
         </div>
 
+        {/* Delivery Partner Card */}
+        <div className="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-5 shadow-xl flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            {/* Helmet Avatar */}
+            <div className="w-14 h-14 rounded-full bg-saffron/20 border-2 border-saffron flex items-center justify-center font-extrabold text-2xl text-saffron shadow-md">
+              🪖
+            </div>
+            <div>
+              <span className="text-[10px] font-extrabold text-saffron uppercase tracking-wider block">
+                ★ YOUR DELIVERY PARTNER ★
+              </span>
+              <h4 className="font-black text-base text-white">Virat Singh</h4>
+              <div className="flex items-center gap-2 text-xs text-zinc-400 mt-0.5 font-semibold">
+                <span className="text-amber-400 flex items-center gap-0.5">
+                  <Star size={12} className="fill-amber-400" /> 4.8
+                </span>
+                <span>• 350+ Deliveries</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex items-center gap-2">
+            <a
+              href="tel:+919876543210"
+              className="w-10 h-10 rounded-full bg-zinc-950 border border-zinc-800 text-saffron flex items-center justify-center hover:bg-saffron hover:text-white transition-all shadow-md"
+              title="Call Rider"
+            >
+              <Phone size={16} />
+            </a>
+            <a
+              href="sms:+919876543210"
+              className="w-10 h-10 rounded-full bg-zinc-950 border border-zinc-800 text-saffron flex items-center justify-center hover:bg-saffron hover:text-white transition-all shadow-md"
+              title="Message Rider"
+            >
+              <MessageSquare size={16} />
+            </a>
+          </div>
+        </div>
+
+        {/* Footer Slogan */}
+        <div className="text-center py-4 text-xs font-black italic tracking-wider text-saffron uppercase">
+          GOOD FOOD. GREAT MATCHES. THAT&apos;S THE IPL DHABA PROMISE!
+        </div>
+
       </main>
+
+      <BottomNav />
     </div>
   );
 }
