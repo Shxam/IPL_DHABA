@@ -17,37 +17,39 @@ export default function GlobalError({ error, reset }: ErrorProps) {
   }, [error]);
 
   return (
-    <div className="min-h-screen bg-cream/35 flex flex-col pb-16 relative">
+    <div className="min-h-screen bg-zinc-950 text-white flex flex-col pb-16 relative">
       <Navbar />
 
       <main className="max-w-md mx-auto px-4 w-full mt-16 flex-1 flex flex-col justify-center items-center text-center">
         {/* Cricket/Rain Delay theme visual */}
         <div className="relative mb-6">
-          <div className="w-24 h-24 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 shadow-md">
+          <div className="w-24 h-24 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 shadow-md">
             <span className="text-5xl">🌧️</span>
           </div>
-          <div className="absolute -bottom-2 -right-2 bg-saffron text-white p-1.5 rounded-full border-2 border-white shadow-md">
+          <div className="absolute -bottom-2 -right-2 bg-saffron text-white p-1.5 rounded-full border-2 border-zinc-950 shadow-md">
             <AlertOctagon size={18} />
           </div>
         </div>
 
         {/* Headline */}
-        <h2 className="font-display font-extrabold text-ink text-2xl tracking-wide uppercase">
+        <h2 className="font-display font-black text-white text-2xl tracking-wide uppercase">
           Rain Delay!
         </h2>
         <span className="text-xs font-bold text-saffron tracking-widest uppercase mt-1">
           Technical Interruption
         </span>
 
-        <p className="text-xs text-muted leading-relaxed mt-4 max-w-sm">
+        <p className="text-xs text-zinc-300 leading-relaxed mt-4 max-w-sm">
           Even the best batsmen face a tricky delivery! The game is temporarily paused due to an unexpected technical glitch.
         </p>
 
-        {/* Display specific error details in a safe collapsed box if available */}
+        {/* Display specific error details in a safe box */}
         {error.message && (
-          <div className="w-full mt-6 bg-red-50/50 border border-red-200/50 rounded-lg p-3 text-left">
-            <span className="text-[10px] text-red-800 font-extrabold uppercase tracking-wide block mb-1">Umpire Decision / Error Log</span>
-            <code className="text-[11px] font-mono text-red-700 break-all leading-normal block">
+          <div className="w-full mt-6 bg-red-950/40 border border-red-800/40 rounded-xl p-3 text-left">
+            <span className="text-[10px] text-red-400 font-extrabold uppercase tracking-wide block mb-1">
+              Umpire Decision / Error Log
+            </span>
+            <code className="text-[11px] font-mono text-red-300 break-all leading-normal block">
               {error.message || 'Unknown runtime error'}
             </code>
           </div>
@@ -57,18 +59,18 @@ export default function GlobalError({ error, reset }: ErrorProps) {
         <div className="flex flex-col sm:flex-row gap-3 w-full mt-8">
           <button
             onClick={() => reset()}
-            className="flex-1 py-3 bg-saffron hover:bg-saffron/90 text-white font-bold rounded-lg shadow-premium text-xs flex items-center justify-center gap-2 transition-all"
+            className="flex-1 py-3 bg-saffron hover:bg-saffron-hover text-white font-extrabold rounded-xl shadow-saffron text-xs flex items-center justify-center gap-2 transition-all uppercase tracking-wider"
           >
-            <RefreshCw size={14} className="animate-spin-slow" />
+            <RefreshCw size={14} />
             <span>Try Again / Refresh</span>
           </button>
 
           <Link
             href="/"
-            className="flex-1 py-3 bg-white hover:bg-cream border border-border text-ink font-bold rounded-lg shadow-sm text-xs flex items-center justify-center gap-1.5 transition-all"
+            className="flex-1 py-3 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-white font-extrabold rounded-xl shadow-md text-xs flex items-center justify-center gap-1.5 transition-all uppercase tracking-wider"
           >
-            <Home size={14} />
-            <span>Go to Menu</span>
+            <Home size={14} className="text-saffron" />
+            <span className="text-white">Go to Menu</span>
           </Link>
         </div>
       </main>
