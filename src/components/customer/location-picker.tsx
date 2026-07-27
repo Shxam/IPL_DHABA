@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 
@@ -30,6 +30,16 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
   onLocationSelect,
 }) => {
   const [position, setPosition] = useState<[number, number]>(initialCoords);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Clean up Leaflet container ID to prevent "Map container is already initialized" error
+  useEffect(() => {
+    return () => {
+      if (containerRef.current) {
+        (containerRef.current as any)._leaflet_id = null;
+      }
+    };
+  }, []);
 
   const handleMapClick = (lat: number, lng: number) => {
     setPosition([lat, lng]);
@@ -37,8 +47,9 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
   };
 
   return (
-    <div className="w-full h-64 rounded-md overflow-hidden border border-border shadow-sm">
+    <div ref={containerRef} className="w-full h-64 rounded-md overflow-hidden border border-border shadow-sm">
       <MapContainer
+        key={`loc-picker-${position[0]}-${position[1]}`}
         center={position}
         zoom={14}
         scrollWheelZoom={true}
@@ -65,4 +76,5 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
     </div>
   );
 };
+
 export default LocationPicker;

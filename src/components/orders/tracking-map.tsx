@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Map, Marker as MapboxMarker, NavigationControl } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { MapContainer, TileLayer, Marker as LeafletMarker, Popup as LeafletPopup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Bike } from 'lucide-react';
+
 // Leaflet custom marker configuration
 const customLeafletIcon = (color: string, label: string) => {
   return L.divIcon({
@@ -39,13 +40,23 @@ export const TrackingMap: React.FC<TrackingMapProps> = ({
 }) => {
   const token = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
   const centerCoords = agentCoords || customerCoords || restaurantCoords;
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+
+  // Clean up Leaflet ID on container to prevent "Map container is already initialized" error
+  useEffect(() => {
+    return () => {
+      if (mapContainerRef.current) {
+        (mapContainerRef.current as any)._leaflet_id = null;
+      }
+    };
+  }, []);
 
   // Render Leaflet fallback if Mapbox Access Token is missing
   if (!token) {
-    console.warn('[Tracking Map] NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN is missing. Falling back to Leaflet (OpenStreetMap).');
     return (
-      <div className="w-full h-80 rounded-lg overflow-hidden border border-border shadow-sm">
+      <div ref={mapContainerRef} className="w-full h-80 rounded-lg overflow-hidden border border-zinc-800 shadow-sm relative">
         <MapContainer
+          key={`leaflet-track-${centerCoords[0]}-${centerCoords[1]}`}
           center={centerCoords}
           zoom={14}
           scrollWheelZoom={false}
@@ -83,9 +94,9 @@ export const TrackingMap: React.FC<TrackingMapProps> = ({
 
   // Render Premium Mapbox Map
   return (
-    <div className="w-full h-80 rounded-lg overflow-hidden border border-border shadow-sm">
+    <div className="w-full h-80 rounded-lg overflow-hidden border border-zinc-800 shadow-sm">
       <Map
-        key={`${centerCoords[0]}:${centerCoords[1]}`}
+        key={`mapbox-track-${centerCoords[0]}:${centerCoords[1]}`}
         initialViewState={{
           longitude: centerCoords[1],
           latitude: centerCoords[0],
@@ -99,7 +110,7 @@ export const TrackingMap: React.FC<TrackingMapProps> = ({
 
         {/* Restaurant Pin */}
         <MapboxMarker longitude={restaurantCoords[1]} latitude={restaurantCoords[0]}>
-          <div className="w-8 h-8 rounded-full bg-saffron border-2 border-white shadow-premium flex items-center justify-center text-sm animate-bounce">
+          <div className="w-8 h-8 rounded-full bg-saffron border-2 border-white shadow-premium flex items-center justify-center text-sm font-bold text-white animate-bounce">
             K
           </div>
         </MapboxMarker>
@@ -107,7 +118,7 @@ export const TrackingMap: React.FC<TrackingMapProps> = ({
         {/* Customer Pin */}
         {customerCoords && (
           <MapboxMarker longitude={customerCoords[1]} latitude={customerCoords[0]}>
-            <div className="w-7 h-7 rounded-full bg-blue border-2 border-white shadow-premium flex items-center justify-center text-xs">
+            <div className="w-7 h-7 rounded-full bg-blue-500 border-2 border-white shadow-premium flex items-center justify-center text-xs font-bold text-white">
               C
             </div>
           </MapboxMarker>
