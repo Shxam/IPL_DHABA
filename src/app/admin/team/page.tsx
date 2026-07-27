@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase/client';
 import { useUserStore } from '@/store/use-user-store';
@@ -229,7 +230,7 @@ export default function TeamManagementPage() {
                   {/* Avatar */}
                   <div className="w-14 h-14 rounded-full bg-cream border border-border flex-shrink-0 overflow-hidden relative flex items-center justify-center font-bold text-lg text-saffron">
                     {member.avatar_url ? (
-                      <img src={member.avatar_url} alt={member.full_name || 'Staff'} className="w-full h-full object-cover" />
+                      <Image src={member.avatar_url} alt={member.full_name || 'Staff'} width={56} height={56} className="w-full h-full object-cover" />
                     ) : (
                       (member.full_name || 'S').slice(0, 1).toUpperCase()
                     )}

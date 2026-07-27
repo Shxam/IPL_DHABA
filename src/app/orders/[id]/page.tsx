@@ -22,7 +22,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
   const driverLocation = useDeliveryLocation(orderId);
 
   const [existingReview, setExistingReview] = useState<any | null>(null);
-  const [loadingReview, setLoadingReview] = useState(true);
+  const [loadingReview, setLoadingReview] = useState<boolean>(false);
   const [rating, setRating] = useState<number>(0);
   const [hoverRating, setHoverRating] = useState<number>(0);
   const [comment, setComment] = useState<string>('');
@@ -85,27 +85,29 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
 
   // 3. Fetch existing review if order is delivered
   useEffect(() => {
-    async function fetchExistingReview() {
+    if (!orderId || order?.status !== 'delivered') return;
+
+    let isMounted = true;
+    Promise.resolve().then(async () => {
       try {
-        const { data, error } = await supabase
+        const { data } = await supabase
           .from('reviews')
           .select('*')
           .eq('order_id', orderId)
           .maybeSingle();
-        if (data) {
-          setExistingReview(data);
+        if (isMounted) {
+          if (data) setExistingReview(data);
+          setLoadingReview(false);
         }
       } catch (err) {
         console.error('Error fetching review:', err);
-      } finally {
-        setLoadingReview(false);
+        if (isMounted) setLoadingReview(false);
       }
-    }
-    if (orderId && order?.status === 'delivered') {
-      fetchExistingReview();
-    } else {
-      setLoadingReview(false);
-    }
+    });
+
+    return () => {
+      isMounted = false;
+    };
   }, [orderId, order?.status]);
 
   const handleReviewSubmit = async (e: React.FormEvent) => {
@@ -268,7 +270,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                 </div>
                 {existingReview.comment && (
                   <p className="text-sm italic text-muted max-w-md bg-cream/20 border border-border/40 rounded-xl px-4 py-3 mb-4">
-                    "{existingReview.comment}"
+                    &quot;{existingReview.comment}&quot;
                   </p>
                 )}
                 
@@ -276,7 +278,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                   <div className="bg-saffron/5 border border-saffron/20 rounded-2xl p-5 max-w-md mt-2 flex flex-col items-center">
                     <span className="text-xs font-bold text-saffron uppercase tracking-wider mb-2">Google Review Funnel</span>
                     <p className="text-xs text-muted mb-4 font-semibold">
-                      We're thrilled you enjoyed your food! Would you support our Dhaba by leaving a Google review?
+                      We&apos;re thrilled you enjoyed your food! Would you support our Dhaba by leaving a Google review?
                     </p>
                     {existingReview.google_review_clicked ? (
                       <span className="text-xs text-green font-bold flex items-center gap-1">
@@ -293,7 +295,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                   </div>
                 ) : (
                   <p className="text-xs text-muted font-bold mt-2">
-                    Thank you for your feedback! We'll use this to improve our kitchen quality immediately.
+                    Thank you for your feedback! We&apos;ll use this to improve our kitchen quality immediately.
                   </p>
                 )}
               </div>

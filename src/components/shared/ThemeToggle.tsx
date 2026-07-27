@@ -1,34 +1,37 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useSyncExternalStore } from 'react';
 import { Sun, Moon } from 'lucide-react';
 
+const emptySubscribe = () => () => {};
+const getSnapshot = () => true;
+const getServerSnapshot = () => false;
+
 export const ThemeToggle: React.FC = () => {
-  const [mounted, setMounted] = useState(false);
-  const [isDark, setIsDark] = useState(false);
+  const isMounted = useSyncExternalStore(emptySubscribe, getSnapshot, getServerSnapshot);
+
+  const [isDark, setIsDark] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    const savedTheme = localStorage.getItem('theme');
+    const systemPrefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches;
+    return savedTheme === 'dark' || (!savedTheme && systemPrefersDark);
+  });
 
   useEffect(() => {
-    setMounted(true);
-    const savedTheme = localStorage.getItem('theme');
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const preferDark = savedTheme === 'dark' || (!savedTheme && systemPrefersDark);
-    setIsDark(preferDark);
-    document.documentElement.classList.toggle('dark', preferDark);
-  }, []);
+    if (!isMounted) return;
+    document.documentElement.classList.toggle('dark', isDark);
+    try {
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    } catch (e) {
+      console.error('Failed to save theme in localStorage:', e);
+    }
+  }, [isDark, isMounted]);
 
   const toggleTheme = () => {
-    if (isDark) {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-      setIsDark(false);
-    } else {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-      setIsDark(true);
-    }
+    setIsDark((prev) => !prev);
   };
 
-  if (!mounted) {
+  if (!isMounted) {
     return (
       <button
         type="button"
