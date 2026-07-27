@@ -74,7 +74,7 @@ export default function DeliveryPortal() {
     <div className="min-h-screen bg-cream/30 flex flex-col">
       
       {/* Portal Header */}
-      <header className="bg-ink text-white sticky top-0 z-40 px-6 py-4 flex items-center justify-between shadow-md">
+      <header className="bg-zinc-900 dark:bg-zinc-950 text-white sticky top-0 z-40 px-6 py-4 flex items-center justify-between shadow-md border-b border-zinc-800">
         <div className="flex items-center gap-2">
           <Truck className="text-saffron w-5 h-5" />
           <h1 className="font-display text-lg font-bold tracking-wide text-saffron">Dhaba Driver</h1>

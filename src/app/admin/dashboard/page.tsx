@@ -175,17 +175,17 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-cream/30 flex flex-col">
       
       {/* Dashboard Top Header */}
-      <header className="bg-ink text-white sticky top-0 z-40 px-6 py-4 flex items-center justify-between shadow-md">
+      <header className="bg-zinc-900 dark:bg-zinc-950 text-white sticky top-0 z-40 px-6 py-4 flex items-center justify-between shadow-md border-b border-zinc-800">
         <div className="flex items-center gap-3">
           <ShieldAlert className="text-saffron w-6 h-6 animate-pulse" />
           <div>
             <h1 className="font-display text-lg sm:text-xl font-bold tracking-wide text-saffron">Dhaba Admin</h1>
-            <p className="text-[10px] text-muted-foreground opacity-80 font-medium">Real-time Dashboard</p>
+            <p className="text-[10px] text-zinc-400 opacity-80 font-medium">Real-time Dashboard</p>
           </div>
         </div>
 
         <div className="flex items-center gap-4">
-          <span className="hidden md:inline text-xs font-semibold text-gray-300">
+          <span className="hidden md:inline text-xs font-semibold text-zinc-300">
             Welcome, {user.full_name && user.full_name !== 'Guest User' ? user.full_name : user.email} ({user.role.toUpperCase()})
           </span>
           <button 
@@ -201,11 +201,11 @@ export default function AdminDashboard() {
       <div className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6">
         
         {/* Navigation Tabs */}
-        <nav className="flex border-b border-border bg-surface rounded-md p-1 border shadow-sm">
+        <nav className="flex border border-border bg-surface rounded-md p-1 shadow-sm">
           <button
             onClick={() => setActiveTab('orders')}
             className={`flex-1 flex items-center justify-center gap-1.5 py-3 text-xs sm:text-sm font-bold rounded-md transition-all ${
-              activeTab === 'orders' ? 'bg-saffron text-white shadow-sm' : 'text-muted hover:bg-cream/40'
+              activeTab === 'orders' ? 'bg-saffron text-white shadow-sm' : 'text-muted hover:text-ink hover:bg-surface-hover'
             }`}
           >
             <ListOrdered size={16} />
@@ -214,7 +214,7 @@ export default function AdminDashboard() {
           <button
             onClick={() => setActiveTab('menu')}
             className={`flex-1 flex items-center justify-center gap-1.5 py-3 text-xs sm:text-sm font-bold rounded-md transition-all ${
-              activeTab === 'menu' ? 'bg-saffron text-white shadow-sm' : 'text-muted hover:bg-cream/40'
+              activeTab === 'menu' ? 'bg-saffron text-white shadow-sm' : 'text-muted hover:text-ink hover:bg-surface-hover'
             }`}
           >
             <Package size={16} />
@@ -224,7 +224,7 @@ export default function AdminDashboard() {
             <button
               onClick={() => setActiveTab('audit')}
               className={`flex-1 flex items-center justify-center gap-1.5 py-3 text-xs sm:text-sm font-bold rounded-md transition-all ${
-                activeTab === 'audit' ? 'bg-saffron text-white shadow-sm' : 'text-muted hover:bg-cream/40'
+                activeTab === 'audit' ? 'bg-saffron text-white shadow-sm' : 'text-muted hover:text-ink hover:bg-surface-hover'
               }`}
             >
               <BarChart size={16} />
@@ -246,7 +246,7 @@ export default function AdminDashboard() {
               </div>
             ) : (
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <Card className="bg-surface border-border">
+                <Card className="bg-surface border-border shadow-sm">
                   <CardContent className="p-4 flex items-center justify-between">
                     <div>
                       <p className="text-xs font-semibold text-muted">Today&apos;s Revenue</p>
@@ -254,10 +254,10 @@ export default function AdminDashboard() {
                         {formatPrice(analyticsData?.today.totalRevenue || 0)}
                       </h4>
                     </div>
-                    <TrendingUp className="text-saffron w-8 h-8 opacity-20" />
+                    <TrendingUp className="text-saffron w-8 h-8 opacity-40" />
                   </CardContent>
                 </Card>
-                <Card className="bg-surface border-border">
+                <Card className="bg-surface border-border shadow-sm">
                   <CardContent className="p-4 flex items-center justify-between">
                     <div>
                       <p className="text-xs font-semibold text-muted">Today&apos;s Orders</p>
@@ -265,10 +265,10 @@ export default function AdminDashboard() {
                         {analyticsData?.today.totalOrders || 0}
                       </h4>
                     </div>
-                    <ShoppingBag className="text-ink w-8 h-8 opacity-20" />
+                    <ShoppingBag className="text-muted w-8 h-8 opacity-40" />
                   </CardContent>
                 </Card>
-                <Card className="bg-surface border-border">
+                <Card className="bg-surface border-border shadow-sm">
                   <CardContent className="p-4 flex items-center justify-between">
                     <div>
                       <p className="text-xs font-semibold text-muted">Active Orders</p>
@@ -276,10 +276,10 @@ export default function AdminDashboard() {
                         {analyticsData?.today.pendingOrders || 0}
                       </h4>
                     </div>
-                    <Clock className="text-ink w-8 h-8 opacity-20" />
+                    <Clock className="text-muted w-8 h-8 opacity-40" />
                   </CardContent>
                 </Card>
-                <Card className="bg-surface border-border">
+                <Card className="bg-surface border-border shadow-sm">
                   <CardContent className="p-4 flex items-center justify-between">
                     <div>
                       <p className="text-xs font-semibold text-muted">Completed Today</p>
@@ -287,7 +287,7 @@ export default function AdminDashboard() {
                         {analyticsData?.today.deliveredToday || 0}
                       </h4>
                     </div>
-                    <CheckCircle className="text-green w-8 h-8 opacity-20" />
+                    <CheckCircle className="text-green w-8 h-8 opacity-40" />
                   </CardContent>
                 </Card>
               </div>
@@ -301,8 +301,8 @@ export default function AdminDashboard() {
                   onClick={() => setOrdersFilter(filter)}
                   className={`text-xs font-bold px-4 py-2 rounded-full border transition-all ${
                     ordersFilter === filter
-                      ? 'bg-ink border-ink text-white shadow-sm'
-                      : 'bg-surface border-border text-muted hover:border-ink hover:text-ink'
+                      ? 'bg-saffron border-saffron text-white shadow-saffron'
+                      : 'bg-surface border-border text-muted hover:border-saffron hover:text-saffron'
                   }`}
                 >
                   {filter.toUpperCase()}

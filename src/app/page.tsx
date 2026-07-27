@@ -61,27 +61,30 @@ export default function HomePage() {
       <Navbar onCartClick={() => setIsCartOpen(true)} />
 
       {/* Hero Banner Section */}
-      <section className="relative w-full h-[40vh] bg-ink/75 flex flex-col justify-end p-6 md:p-12 text-white">
+      <section className="relative w-full h-[40vh] min-h-[280px] bg-zinc-950 flex flex-col justify-end p-6 md:p-12 overflow-hidden">
         <Image
           src="/IPL DHABA ITEMS/star chicken starter.jpeg"
           alt="IPL Dhaba Hero Banner"
           fill
           sizes="100vw"
-          className="object-cover mix-blend-overlay opacity-50 z-0"
+          className="object-cover opacity-40 z-0"
           priority
         />
-        <div className="max-w-7xl mx-auto w-full z-10">
-          <span className="inline-flex items-center gap-1.5 bg-green px-3 py-1 rounded-full text-xs font-bold shadow-md animate-pulse">
+        {/* Dark Gradient Overlay for Maximum Text Contrast */}
+        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/70 to-transparent z-[1]" />
+
+        <div className="max-w-7xl mx-auto w-full z-10 relative">
+          <span className="inline-flex items-center gap-1.5 bg-green-700 text-white px-3 py-1 rounded-full text-xs font-bold shadow-md animate-pulse">
             <span className="w-2 h-2 bg-emerald-400 rounded-full" />
             OPEN NOW
           </span>
-          <h1 className="font-display text-4xl md:text-6xl font-bold mt-3 text-shadow-md">
-            IPL Dhaba
+          <h1 className="font-display text-4xl md:text-6xl font-extrabold mt-3 text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)] tracking-wide">
+            <span className="text-saffron">IPL</span> Dhaba
           </h1>
-          <p className="text-sm md:text-lg opacity-90 font-medium tracking-wide mt-1">
+          <p className="text-sm md:text-lg text-zinc-200 font-medium tracking-wide mt-1 drop-shadow-md">
             Indian Prime Line - Tasty &amp; Healthy
           </p>
-          <p className="text-xs md:text-sm font-semibold text-saffron tracking-wider italic mt-1">
+          <p className="text-xs md:text-sm font-semibold text-amber-400 tracking-wider italic mt-1 drop-shadow-md">
             Where Flavours Hit Like a Six!
           </p>
         </div>
@@ -158,8 +161,8 @@ export default function HomePage() {
                   onClick={() => setSelectedFoodType(type)}
                   className={`text-xs font-semibold px-3 py-1 rounded-full border transition-all ${
                     selectedFoodType === type
-                      ? 'bg-ink border-ink text-white'
-                      : 'bg-surface border-border text-muted hover:border-ink hover:text-ink'
+                      ? 'bg-saffron border-saffron text-white shadow-saffron'
+                      : 'bg-surface border-border text-muted hover:border-saffron hover:text-saffron'
                   }`}
                 >
                   {type === 'all' ? 'Show All' : type.replace('_', '-').toUpperCase()}

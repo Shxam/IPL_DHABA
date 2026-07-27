@@ -18,12 +18,12 @@
 }
 
 .dark {
-  --cream: #0C0C0F;
-  --ink: #F9FAFB;
-  --border: #222226;
-  --surface: #131316;
-  --surface-hover: #19191D;
-  --muted: #9CA3AF;
+  --cream: #09090B;
+  --ink: #FAFAFA;
+  --border: #27272A;
+  --surface: #18181B;
+  --surface-hover: #27272A;
+  --muted: #A1A1AA;
 }
 
 body {
